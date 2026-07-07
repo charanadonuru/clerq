@@ -5,7 +5,7 @@
 ---
 
 <p align="center">
-  <img src="assets/img.png" alt="Clerq Dashboard" width="900"/>
+  <img src="assets/img2.png" alt="Clerq Dashboard" width="900"/>
 </p>
 
 <p align="center">
