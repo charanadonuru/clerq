@@ -5,11 +5,11 @@
 ---
 
 <p align="center">
-  <img src="assets/img.png" alt="Clerq Dashboard" width="150"/>
+  <img src="assets/img.png" alt="Clerq Dashboard" width="200"/>
 </p>
 
 <p align="center">
-  <img src="assets/demo2.gif" alt="Clerq Demo" width="900"/>
+  <img src="assets/demo2.gif" alt="Clerq Demo" width="400"/>
 </p>
 
 ---
