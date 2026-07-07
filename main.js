@@ -56,6 +56,7 @@ function isClerqRenamedPath(filePath) {
 function getRenameDecision(fingerprint, config) {
   const priorRenameCount = storage.getPriorRenameCount(fingerprint);
 
+  // When "Skip re-renaming" is ON: block any file already renamed once
   if (config.skipReRenamingOnMove && priorRenameCount > 0) {
     return {
       action: 'skip',
@@ -64,13 +65,8 @@ function getRenameDecision(fingerprint, config) {
     };
   }
 
-  if (!config.skipReRenamingOnMove && priorRenameCount >= 1) {
-    return {
-      action: 'skip',
-      reason: 'Already renamed — file was previously renamed by Clerq',
-      priorRenameCount
-    };
-  }
+  // When "Skip re-renaming" is OFF: allow re-renaming freely
+  // (no block — always proceed)
 
   return { action: 'proceed', priorRenameCount };
 }
@@ -166,8 +162,8 @@ function shutdownApp() {
   }
 }
 
-function enqueueFileRename(filePath, options = {}) {
-  const parentFolder = path.dirname(filePath);
+function enqueueFileRename(filePath, watchedFolderPath, options = {}) {
+  const parentFolder = watchedFolderPath || path.dirname(filePath);
   renameQueue = renameQueue
     .then(() => processNewFile(filePath, parentFolder, options))
     .catch(err => console.error('Queued rename failed:', err));
@@ -583,7 +579,7 @@ function setupWatcher(folderPath, recursive) {
     }
     // Delay slightly so that unlink events for manual renames can fire first on Windows
     setTimeout(() => {
-      processNewFile(filePath, folderPath);
+      enqueueFileRename(filePath, folderPath);
     }, 150);
   });
 
@@ -774,24 +770,15 @@ async function processNewFile(filePath, watchedFolderPath, options = {}) {
   if (processingPaths.has(pathKey)) return;
   if (!manual && isClerqRenamedPath(filePath)) return;
 
-  // Fix 2: Detect manual renames. Find if this fingerprint matches any known file
-  // that no longer exists (meaning it was renamed to this new path).
+  // Detect manual renames: only use the time-gated unlink tracking.
+  // When a file is renamed manually, chokidar fires unlink(old) then add(new).
+  // The unlink handler records the fingerprint. If the new file's fingerprint
+  // matches a recent unlink (within 5s), it's a manual rename — skip it.
   if (!manual) {
     const earlyFp = getFileFingerprint(filePath);
     if (earlyFp) {
-      let isManualRename = false;
-      for (const [oldPathKey, oldFp] of fileFingerprints.entries()) {
-        if (oldFp === earlyFp && oldPathKey !== pathKey) {
-          if (!fs.existsSync(oldPathKey)) {
-            isManualRename = true;
-            fileFingerprints.delete(oldPathKey);
-            break;
-          }
-        }
-      }
-
       const unlinkTime = recentUnlinks.get(earlyFp);
-      if (isManualRename || (unlinkTime && Date.now() - unlinkTime < 5000)) {
+      if (unlinkTime && Date.now() - unlinkTime < 5000) {
         recentUnlinks.delete(earlyFp);
         fileFingerprints.set(pathKey, earlyFp);
         return; // This is a manual rename, not a new file
@@ -1322,7 +1309,7 @@ ipcMain.handle('rename-files-manual', async (event, filePaths) => {
   }
 
   for (const fp of validPaths) {
-    enqueueFileRename(fp, { manual: true });
+    enqueueFileRename(fp, null, { manual: true });
   }
   return { success: true, count: validPaths.length };
 });
