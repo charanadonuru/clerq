@@ -161,28 +161,6 @@ Remove the watched folder and add it again, or restart Clerq.
 - GitHub: https://github.com/charanadonuru
 
 ---
-
-# Version History
-
-## v1.0.0
-
-- Initial release
-- Automatic AI-powered file renaming
-- Folder monitoring with Chokidar
-- Manual file rename utility
-- AI-powered folder rename utility
-- Undo rename functionality
-- Rename history with CSV export
-- Multi-provider AI support (Gemini, OpenAI, Claude, Ollama)
-- Offline renaming using Ollama
-- Duplicate filename handling
-- Blacklist rules
-- System tray integration
-- Toast notifications
-- Configurable settings
-
----
-
 # License
 
 This project is licensed under the **MIT License**.
