@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clerq</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-logo">
+        <span class="logo-icon">✦</span>
+        <h1 class="app-title">Clerq</h1>
+      </div>
+      <div class="header-controls">
+        <div id="status-indicator" class="status-dot green"></div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="master-toggle" checked>
+          <span class="slider"></span>
+        </label>
+        <button type="button" id="btn-close-window" class="btn-close-header" title="Close" aria-label="Close">×</button>
+      </div>
+    </header>
+
+    <!-- Content Sections (Tab Containers) -->
+    <main class="app-main">
+      <!-- DASHBOARD TAB -->
+      <section id="tab-dashboard" class="tab-content active">
+        <!-- Watched Folders Section -->
+        <div class="section-card">
+          <div class="card-header">
+            <h3>Watched Folders</h3>
+            <button id="btn-add-folder" class="btn btn-primary btn-sm">+ Add Folder</button>
+          </div>
+          <div id="watched-folders-list" class="folder-list-container">
+            <!-- Dynamic elements will be inserted here -->
+            <div class="empty-state">No folders added. Click "+ Add Folder" to begin.</div>
+          </div>
+        </div>
+
+        <!-- Manual File Renamer -->
+        <div class="section-card">
+          <div class="card-header">
+            <h3>Rename Existing Files</h3>
+          </div>
+          <div id="file-dropzone" class="dropzone dropzone-compact">
+            <span class="dropzone-icon">📄</span>
+            <span class="dropzone-text">Drop files here to rename now, or click to choose</span>
+          </div>
+          <div id="file-rename-status" class="status-message" style="display:none;"></div>
+        </div>
+
+        <!-- Folder Renamer Section -->
+        <div class="section-card">
+          <div class="card-header">
+            <h3>Folder Rename Utility</h3>
+          </div>
+          <div id="folder-dropzone" class="dropzone">
+            <span class="dropzone-icon">📁</span>
+            <span class="dropzone-text">Drag & drop a folder here, or click to choose</span>
+          </div>
+          <div id="folder-rename-preview" class="rename-preview-container" style="display:none;">
+            <div class="preview-path" id="preview-folder-path"></div>
+            <div class="preview-suggest">
+              <span class="suggest-label">Suggested Name:</span>
+              <input type="text" id="input-suggested-folder-name" class="input-text" />
+            </div>
+            <div class="preview-actions">
+              <button id="btn-cancel-folder-rename" class="btn btn-secondary btn-sm">Cancel</button>
+              <button id="btn-apply-folder-rename" class="btn btn-success btn-sm">Rename Folder</button>
+            </div>
+          </div>
+          <div id="folder-rename-status" class="status-message" style="display:none;"></div>
+        </div>
+      </section>
+
+      <!-- HISTORY TAB -->
+      <section id="tab-history" class="tab-content">
+        <div class="history-actions">
+          <h3>Activity History</h3>
+          <div class="history-buttons">
+            <button id="btn-export-csv" class="btn btn-secondary btn-sm">Export CSV</button>
+            <button id="btn-clear-history" class="btn btn-danger-outline btn-sm">Clear Log</button>
+          </div>
+        </div>
+        <div id="history-list" class="history-list-container">
+          <!-- Dynamic list items will be inserted here -->
+          <div class="empty-state">No recent activities.</div>
+        </div>
+      </section>
+
+      <!-- SETTINGS TAB -->
+      <section id="tab-settings" class="tab-content">
+        <!-- API settings -->
+        <div class="settings-group">
+          <h4>AI API Configuration</h4>
+          <div class="settings-row">
+            <label for="select-provider">Provider</label>
+            <select id="select-provider" class="select-input">
+              <option value="gemini">Google Gemini</option>
+              <option value="openai">OpenAI</option>
+              <option value="claude">Anthropic Claude</option>
+              <option value="ollama">Ollama (Local AI)</option>
+            </select>
+          </div>
+          
+          <div class="settings-row" id="row-api-key">
+            <label for="input-api-key">API Key</label>
+            <div class="password-input-container">
+              <input type="password" id="input-api-key" class="input-text" placeholder="Enter API Key" />
+              <button id="btn-toggle-key-visibility" class="btn-icon">👁️</button>
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <label for="select-model">Model</label>
+            <select id="select-model" class="select-input">
+              <!-- Models will be filled dynamically based on provider -->
+            </select>
+          </div>
+
+          <div class="settings-row" id="row-ollama-custom-model" style="display:none;">
+            <label for="input-ollama-custom-model">Custom Model</label>
+            <input type="text" id="input-ollama-custom-model" class="input-text" placeholder="e.g. llama3.2:latest" />
+          </div>
+
+          <div class="settings-row" id="row-ollama-url" style="display:none;">
+            <label for="input-ollama-url">Ollama URL</label>
+            <input type="text" id="input-ollama-url" class="input-text" value="http://localhost:11434" />
+          </div>
+
+          <div class="settings-action-row">
+            <button id="btn-test-connection" class="btn btn-secondary btn-block">Test Connection</button>
+          </div>
+          <div id="connection-test-result" class="status-message" style="display:none;"></div>
+        </div>
+
+        <!-- Renaming Rules settings -->
+        <div class="settings-group">
+          <h4>Rename Preferences</h4>
+          <div class="settings-row">
+            <label for="select-length">Name Length</label>
+            <select id="select-length" class="select-input">
+              <option value="short">Short (2-3 words)</option>
+              <option value="medium" selected>Medium (3-5 words)</option>
+              <option value="descriptive">Descriptive (5-7 words)</option>
+            </select>
+          </div>
+          <div class="settings-row">
+            <label class="checkbox-container">
+              Preserve original name in brackets
+              <input type="checkbox" id="check-preserve-name">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="settings-row flex-column">
+            <div class="slider-header">
+              <label for="range-file-size">Max File Size Limit</label>
+              <span id="label-file-size">50 MB</span>
+            </div>
+            <input type="range" id="range-file-size" min="1" max="250" value="50" class="slider-input">
+          </div>
+        </div>
+
+        <!-- File Types settings -->
+        <div class="settings-group">
+          <h4>Watched File Types</h4>
+          <div class="file-types-grid" id="file-types-container">
+            <!-- Dynamic checkboxes will be inserted here -->
+          </div>
+        </div>
+
+        <!-- Blacklist settings -->
+        <div class="settings-group">
+          <h4>Blacklist Rules</h4>
+
+          <div class="settings-row flex-column">
+            <div class="card-header" style="padding:0; margin-bottom:6px;">
+              <label>Excluded Folders</label>
+              <button id="btn-add-blacklist-folder" class="btn btn-secondary btn-sm" type="button">+ Add Folder</button>
+            </div>
+            <div id="blacklist-folders-list" class="folder-list-container compact-list">
+              <div class="empty-state">No excluded folders.</div>
+            </div>
+          </div>
+          
+          <div class="settings-row flex-column">
+            <label>Blacklisted Filename Patterns (e.g. invoice_*)</label>
+            <div class="tag-input-container">
+              <div id="blacklist-patterns-tags" class="tags-container"></div>
+              <input type="text" id="input-add-pattern" class="input-text-tag" placeholder="Type pattern + Enter" />
+            </div>
+          </div>
+
+          <div class="settings-row flex-column">
+            <label>Blacklisted Content Keywords</label>
+            <div class="tag-input-container">
+              <div id="blacklist-keywords-tags" class="tags-container"></div>
+              <input type="text" id="input-add-keyword" class="input-text-tag" placeholder="Type keyword + Enter" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Privacy Settings -->
+        <div class="settings-group">
+          <h4>Privacy & Behavior</h4>
+          <div class="settings-row flex-column">
+            <div class="slider-header">
+              <label for="range-max-chars">Max Content snippet chars</label>
+              <span id="label-max-chars">500 chars</span>
+            </div>
+            <input type="range" id="range-max-chars" min="100" max="2000" step="50" value="500" class="slider-input">
+          </div>
+          <div class="settings-row flex-column">
+            <label>Skip reading file content for these types (metadata only)</label>
+            <div class="file-types-grid" id="ignored-content-types-container"></div>
+          </div>
+          <div class="settings-row">
+            <label class="checkbox-container" title="When off, an already-renamed file can be renamed one more time with a (1) suffix.">
+              Skip re-renaming the same file
+              <input type="checkbox" id="check-skip-re-rename">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="settings-row">
+            <label class="checkbox-container">
+              Auto-start app on boot
+              <input type="checkbox" id="check-auto-start">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Notifications settings -->
+        <div class="settings-group">
+          <h4>Toasts & Alerts</h4>
+          <div class="settings-row">
+            <label class="checkbox-container">
+              Show toast notifications
+              <input type="checkbox" id="check-show-toast" checked>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="settings-row">
+            <label class="checkbox-container">
+              Show Undo button in toast
+              <input type="checkbox" id="check-show-undo" checked>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="settings-row flex-column">
+            <div class="slider-header">
+              <label for="range-toast-duration">Toast Duration</label>
+              <span id="label-toast-duration">5 seconds</span>
+            </div>
+            <input type="range" id="range-toast-duration" min="2" max="10" value="5" class="slider-input">
+          </div>
+          <div class="settings-row">
+            <label for="select-toast-pos">Toast Position</label>
+            <select id="select-toast-pos" class="select-input">
+              <option value="bottom-right" selected>Bottom Right</option>
+              <option value="top-right">Top Right</option>
+              <option value="bottom-left">Bottom Left</option>
+              <option value="top-left">Top Left</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Data management -->
+        <div class="settings-group">
+          <h4>Data Management</h4>
+          <div class="data-actions-grid">
+            <button id="btn-settings-reset" class="btn btn-secondary-outline btn-block">Reset Settings</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer Tabs Navigation -->
+    <footer class="app-footer">
+      <nav class="footer-nav">
+        <button class="nav-item active" data-tab="dashboard">
+          <span class="nav-icon">📊</span>
+          <span class="nav-label">Dashboard</span>
+        </button>
+        <button class="nav-item" data-tab="history">
+          <span class="nav-icon">📜</span>
+          <span class="nav-label">History</span>
+        </button>
+        <button class="nav-item" data-tab="settings">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">Settings</span>
+        </button>
+      </nav>
+      <button id="btn-quit-app" class="btn-quit">Quit</button>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

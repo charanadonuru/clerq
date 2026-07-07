@@ -1,0 +1,46 @@
+{
+  "name": "clerq",
+  "version": "1.0.0",
+  "description": "Background file watcher and AI renamer",
+  "author": "D Charana",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "package": "electron-builder build --win --dir",
+    "dist": "electron-builder build --win"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.14",
+    "chokidar": "^3.6.0",
+    "exif-parser": "^0.1.12",
+    "mammoth": "^1.8.0",
+    "music-metadata": "^7.14.0",
+    "pdf-parse": "^1.1.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.clerq.app",
+    "productName": "Clerq",
+    "icon": "assets/icon.ico",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "portable"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "storage.js",
+      "textExtractor.js",
+      "renderer/**/*",
+      "assets/**/*"
+    ]
+  }
+}
