@@ -66,7 +66,7 @@ function getRenameDecision(fingerprint, config) {
   }
 
   // When "Skip re-renaming" is OFF: allow re-renaming freely
-  // (no block — always proceed)
+ 
 
   return { action: 'proceed', priorRenameCount };
 }
