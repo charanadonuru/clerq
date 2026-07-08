@@ -330,7 +330,7 @@ async function resetPopoverDashboard() {
       true
     );
   } catch (e) {
-    // Renderer may not be ready yet on first load
+    
   }
 }
 
@@ -342,7 +342,7 @@ async function flushPopoverPaint() {
       true
     );
   } catch (e) {
-    // ignore
+    
   }
 }
 
@@ -363,7 +363,7 @@ async function openPopover() {
   const { x, y } = getPopoverPosition();
   popoverWindow.setPosition(x, y);
 
-  // Show invisibly first so Electron does not flash the last cached tab frame
+  
   popoverWindow.setOpacity(0);
   popoverWindow.show();
   await resetPopoverDashboard();
@@ -416,7 +416,7 @@ function createToastWindow() {
 
   toastWindow = new BrowserWindow({
     width: 380,
-    height: 350, // taller to allow stacked toasts
+    height: 350, 
     show: false,
     frame: false,
     resizable: false,
