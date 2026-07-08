@@ -102,7 +102,7 @@ function terminateStaleInstance() {
   try {
     fs.unlinkSync(pidPath);
   } catch (e) {
-    // ignore
+   
   }
 }
 
