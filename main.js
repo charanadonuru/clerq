@@ -142,13 +142,13 @@ function shutdownApp() {
   if (isShuttingDown) return;
   isShuttingDown = true;
 
-  // User intentionally quit — disable login item so app does not auto-start
-  // after a subsequent Windows restart. It will be re-enabled on next launch.
+  
+  // if user wantedly quits-do not restart the app after a reboot or a login into the system
   if (userExplicitQuit) {
     try {
       app.setLoginItemSettings({ openAtLogin: false, path: app.getPath('exe') });
     } catch (e) {
-      // ignore
+      
     }
   }
 
