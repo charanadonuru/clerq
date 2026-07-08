@@ -24,7 +24,7 @@ let renameQueue = Promise.resolve();
 const processingPaths = new Set();
 const clerqRenamedPaths = new Map(); // path -> expiry timestamp (ignore watcher echo)
 
-// Fix 2: Track fingerprints of files seen in watched folders so we can detect
+//  Track fingerprints of files seen in watched folders so we can detect
 // manual renames (unlink old name + add new name, same content fingerprint).
 const fileFingerprints = new Map(); // normalizedPath -> fingerprint
 const recentUnlinks = new Map();    // fingerprint -> timestamp of unlink event
