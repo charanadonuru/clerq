@@ -312,7 +312,7 @@ function createPopoverWindow() {
 
   popoverWindow.loadFile(path.join(__dirname, 'renderer', 'index.html'));
 
-  // Removed DevTools popup
+  
 
   popoverWindow.on('blur', () => {
     if (Date.now() < ignorePopoverBlurUntil) return;
