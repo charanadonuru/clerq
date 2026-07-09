@@ -1470,13 +1470,13 @@ ipcMain.handle('test-connection', async (event, settings) => {
   }
 });
 
-// Fix 3: Dedicated IPC to highlight a file in Explorer
+
 ipcMain.handle('show-file-in-folder', (event, filePath) => {
   if (filePath && fs.existsSync(filePath)) {
     shell.showItemInFolder(filePath);
     return { success: true };
   }
-  // File doesn't exist — try opening parent directory
+ 
   try {
     const parent = path.dirname(filePath);
     if (fs.existsSync(parent)) {
@@ -1484,7 +1484,7 @@ ipcMain.handle('show-file-in-folder', (event, filePath) => {
       return { success: true, fallback: true };
     }
   } catch (e) {
-    // ignore
+    
   }
   return { success: false };
 });
