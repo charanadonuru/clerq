@@ -1529,14 +1529,12 @@ app.whenReady().then(async () => {
 
   const config = storage.getConfig();
 
-  // Re-enable login item on startup so that if the app was running when
-  // Windows restarted (and login item was disabled on a prior manual quit),
-  // it will auto-start again on future logins.
+ 
   if (config.autoStartOnBoot) {
     try {
       app.setLoginItemSettings({ openAtLogin: true, path: app.getPath('exe') });
     } catch (e) {
-      // ignore
+      
     }
   }
 
@@ -1558,14 +1556,11 @@ app.on('before-quit', () => {
   if (!isShuttingDown) {
     isShuttingDown = true;
 
-    // Only disable auto-start if the user explicitly chose "Quit".
-    // If Windows is restarting/shutting down, leave the login item enabled
-    // so the app auto-starts on the next boot.
     if (userExplicitQuit) {
       try {
         app.setLoginItemSettings({ openAtLogin: false, path: app.getPath('exe') });
       } catch (e) {
-        // ignore
+       
       }
     }
 
