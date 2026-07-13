@@ -1,7 +1,7 @@
-// Global state
+
 let currentConfig = null;
 
-// Available models list mapping
+
 const providerModels = {
   gemini: [
     { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash (Recommended)' },
@@ -27,20 +27,20 @@ const providerModels = {
   ]
 };
 
-// Available file types list
+
 const fileTypesList = ['PDF', 'DOCX', 'XLSX', 'TXT', 'JPG', 'PNG', 'CSV', 'PPTX', 'MP4', 'ZIP', 'MP3', 'EXE'];
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // 1. Tab Navigation setup
+ 
   setupTabs();
 
-  // 2. Load Config & Bind UI controls
+  
   await loadAndRenderConfig();
 
-  // 3. Load & Render History
+
   await loadAndRenderHistory();
 
-  // 4. Subscribe to background IPC events
+ 
   window.api.onHistoryUpdate((history) => {
     renderHistory(history);
   });
@@ -49,17 +49,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateStatusIndicator(state);
   });
 
-  // 5. Manual file rename drop zone
+  
   setupFileRenamer();
 
-  // 6. Folder Renaming Drag & Drop Setup
+  
   setupFolderRenamer();
 
-  // 7. Bind General Actions
+
   setupGeneralActions();
 });
 
-// Tab Navigation
+
 function setupTabs() {
   const navItems = document.querySelectorAll('.nav-item');
   const tabContents = document.querySelectorAll('.tab-content');
@@ -339,7 +339,7 @@ function renderWatchedFolders() {
     info.appendChild(name);
     info.appendChild(pathEl);
 
-    // Open in explorer on click (cursor pointer added via CSS)
+    
     info.style.cursor = 'pointer';
     info.addEventListener('click', (e) => {
       e.stopPropagation();
