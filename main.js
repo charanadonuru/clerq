@@ -554,6 +554,14 @@ function setupWatcher(folderPath, recursive) {
   // When a file is removed (or renamed away), record its fingerprint so we can
   // detect manual renames (unlink + add with the same content hash).
   watcher.on('unlink', (filePath) => {
+    // Don't record fingerprints for browser temp download files — when a
+    // download completes the browser renames e.g. .crdownload → .jpg and
+    // we must NOT treat that as a manual rename.
+    const unlinkExt = path.extname(filePath).toLowerCase();
+    if (['.crdownload', '.tmp', '.part', '.download'].includes(unlinkExt)
+        || unlinkExt.endsWith('.tmp')) {
+      return;
+    }
     const key = normalizePathKey(filePath);
     const fp = fileFingerprints.get(key);
     if (fp) {
