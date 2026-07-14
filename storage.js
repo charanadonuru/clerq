@@ -34,7 +34,7 @@ class Storage {
       maxFileSizeMB: 50,
       enabledFileTypes: {
         PDF: true, DOCX: true, XLSX: true, TXT: true, JPG: true,
-        PNG: true, CSV: true, PPTX: true, MP4: true, ZIP: true,
+        JPEG:true,PNG: true, CSV: true, PPTX: true, MP4: true, ZIP: true,
         MP3: true, EXE: true
       },
       blacklistFolders: [],
