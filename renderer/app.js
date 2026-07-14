@@ -28,7 +28,7 @@ const providerModels = {
 };
 
 
-const fileTypesList = ['PDF', 'DOCX', 'XLSX', 'TXT', 'JPG', 'PNG', 'CSV', 'PPTX', 'MP4', 'ZIP', 'MP3', 'EXE'];
+const fileTypesList = ['PDF', 'DOCX', 'XLSX', 'TXT', 'JPG','JPEG', 'PNG', 'CSV', 'PPTX', 'MP4', 'ZIP', 'MP3', 'EXE'];
 
 document.addEventListener('DOMContentLoaded', async () => {
  
